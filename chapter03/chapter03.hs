@@ -40,7 +40,7 @@ treeHeight (Node _ Empty Empty) = 1
 treeHeight (Node x y z) = 1 + max (treeHeight y) (treeHeight z)
 
 data Direction = RightTurn | LeftTurn | Straight
-                 deriving (Show)
+                 deriving (Eq, Show)
 
 data Point = Point { x :: Double,
                      y :: Double }
@@ -55,15 +55,23 @@ turnMade (Point x1 y1) (Point x2 y2) (Point x3 y3)
     | otherwise = Straight
     where z = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)
 
-path = [(Point (-1.0) 0.0),
-        (Point 0.0 0.0),
-        (Point 0.5 0.25),
+path = [(Point 0.0 (-2.0)),
         (Point 1.0 0.5),
+        (Point 0.5 0.25),
+        (Point 0.0 0.0),
         (Point 0.0 1.0),
         (Point 0.0 2.0),
-        (Point (-2.0) 0.5),
-        (Point (-3.0) (-1.0))]
+        (Point (-1.0) 0.0),
+        (Point (-2.0) 0.5)]
 
 pathTurns :: Path -> [Direction]
 pathTurns (p1:p2:p3:ps) = (turnMade p1 p2 p3) : pathTurns (p2:p3:ps)
 pathTurns _ = []
+
+grahamScan :: Path -> Path -> Path
+grahamScan (p1:p2:ps) [] = grahamScan ps [p2,p1]
+grahamScan path@(p:xs) hull@(p1:p2:ys)
+    | turnMade p2 p1 p == RightTurn     = grahamScan path (p2:ys)
+    | turnMade p2 p1 p == LeftTurn      = grahamScan xs (p:hull)
+    | turnMade p2 p1 p == Straight      = grahamScan xs (p:hull)
+grahamScan [] hull = hull
