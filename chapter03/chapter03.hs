@@ -64,6 +64,6 @@ path = [(Point (-1.0) 0.0),
         (Point (-2.0) 0.5),
         (Point (-3.0) (-1.0))]
 
-pathTurns :: [Point] -> [Direction]
+pathTurns :: Path -> [Direction]
 pathTurns (p1:p2:p3:ps) = (turnMade p1 p2 p3) : pathTurns (p2:p3:ps)
 pathTurns _ = []
