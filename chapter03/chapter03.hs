@@ -46,9 +46,24 @@ data Point = Point { x :: Double,
                      y :: Double }
                    deriving (Show)
 
+type Path = [Point]
+
 turnMade :: Point -> Point -> Point -> Direction
 turnMade (Point x1 y1) (Point x2 y2) (Point x3 y3)
     | z > 0     = LeftTurn
     | z < 0     = RightTurn
     | otherwise = Straight
     where z = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)
+
+path = [(Point (-1.0) 0.0),
+        (Point 0.0 0.0),
+        (Point 0.5 0.25),
+        (Point 1.0 0.5),
+        (Point 0.0 1.0),
+        (Point 0.0 2.0),
+        (Point (-2.0) 0.5),
+        (Point (-3.0) (-1.0))]
+
+pathTurns :: [Point] -> [Direction]
+pathTurns (p1:p2:p3:ps) = (turnMade p1 p2 p3) : pathTurns (p2:p3:ps)
+pathTurns _ = []
