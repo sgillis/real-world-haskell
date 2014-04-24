@@ -9,6 +9,7 @@ module Parse ( identity
              , parseBytes
              , parseNat
              , skipSpaces
+             , Parse(..)
              ) where
 
 import qualified Data.ByteString.Lazy as L
