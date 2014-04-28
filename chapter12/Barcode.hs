@@ -188,3 +188,21 @@ bestLeft ps = sortBy compareWithoutParity
 
 bestRight :: [Run] -> [Parity (Score, Digit)]
 bestRight = map None . bestScores rightSRL
+
+chunkWith :: ([a] -> ([a], [a])) -> [a] -> [[a]]
+chunkWith _ [] = []
+chunkWith f xs = let (h, t) = f xs
+                 in h : chunkWith f t
+
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n = chunkWith (splitAt n)
+
+candidateDigits :: RunLength Bit -> [[Parity Digit]]
+candidateDigits ((_, One):_) = []
+candidateDigits rle | length rle < 59 = [] 
+                    | any null match  = []
+                    | otherwise       = map (map (fmap snd)) match
+                    where match = map bestLeft left ++ map bestRight right
+                          left  = chunksOf 4 . take 24 . drop 3 $ runLengths
+                          right = chunksOf 4 . take 24 . drop 32 $ runLengths
+                          runLengths = map fst rle
