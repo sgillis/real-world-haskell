@@ -8,6 +8,6 @@ data MovieReview = MovieReview {
 
 lookup' key alist = join $ lookup key alist
 
-review alist = liftM3 MovieReview (lookup' "title" alist)
-                                  (lookup' "user" alist)
-                                  (lookup' "review" alist)
+review alist = MovieReview `liftM` (lookup' "title" alist)
+                           `ap` (lookup' "user" alist)
+                           `ap` (lookup' "review" alist)
